@@ -78,6 +78,45 @@ The CVAE did **not** beat the classical generators on the declared moment-distan
 
 This negative/ambiguous result is kept deliberately: the point is to evaluate scenario generators by the decisions they induce, not to advertise a learned model regardless of evidence.
 
+## GitHub Actions validation
+
+A real GitHub-hosted Ubuntu runner validated the end-to-end pipeline with:
+
+```text
+Python          3.12.14
+PyTorch         2.13.0+cpu
+NumPy           2.5.2
+SciPy           1.18.1
+scikit-learn    1.9.0
+```
+
+The remote regression suite passed all **6/6 tests**.
+
+The CI smoke experiment used:
+
+```text
+horizon                 5
+training paths         160
+validation paths        50
+held-out contexts        3
+CVAE epochs              5
+generated scenarios     32/context
+evaluation paths        64/context
+```
+
+Runner-observed result:
+
+```text
+best validation reconstruction MSE: 1.03573
+
+method                    moment distance   mean cost      CVaR      fill   stockout   reserve
+Conditional bootstrap          0.2000        1564.45     1995.78   0.9806   0.1167     69.00
+Gaussian residual              0.2075        1562.95     1994.28   0.9806   0.1167     68.00
+Conditional VAE                0.3690        1579.67     2019.54   0.9681   0.1552     61.67
+```
+
+In this short CI training run the CVAE did **not** outperform either classical generator on the declared moment-distance metric, expected cost, CVaR, fill rate, or stockout-period rate. This is treated as a validated negative learned-model result rather than as a speedup or quality claim. The smoke run exists to validate the complete training → scenario generation → stochastic decision → independent evaluation path.
+
 ## Regression tests
 
 The suite checks:
